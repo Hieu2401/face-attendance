@@ -1,6 +1,6 @@
 import cv2
 import os
-import time  # ➕ THÊM
+import time   
 
 name = input("Nhập tên người dùng (không dấu): ").strip()
 save_path = f"dataset/{name}"
@@ -17,7 +17,7 @@ else:
     exit()
 
 count = 0
-last_capture_time = 0  # ➕ THÊM
+last_capture_time = 0   
 
 while True:
     ret, frame = cap.read()
@@ -39,7 +39,7 @@ while True:
             print(f"[📸] Lưu ảnh {count}: {filename}")
             last_capture_time = current_time
 
-            # Vẽ khung
+            
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
             if count >= 20:
