@@ -1,0 +1,21 @@
+
+# Thư mục môi trường ảo
+venv/
+venv38/
+
+# File dữ liệu tạm
+*.csv
+*.pickle
+*.pkl
+*.tar.gz
+*.whl
+
+# Cache của Python
+__pycache__/
+*.pyc
+
+# File hệ thống
+.DS_Store
+
+# Cấu hình IDE
+.idea/
