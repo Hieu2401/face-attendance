@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử điểm danh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 95%;
+            margin: auto;
+            font-size: 17px;
+        }
+
+        th {
+            background-color: #e9ecef;
+            font-weight: 600;
+        }
+
+        td, th {
+            text-align: center;
+            padding: 14px;
+            vertical-align: middle;
+        }
+
+        .late, .early {
+            color: #dc3545 !important;
+            font-weight: bold;
+        }
+
+        .btn-danger {
+            padding: 4px 14px;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .top-actions a {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body class="container mt-4">
+    <h2>📊 Lịch sử điểm danh</h2>
+
+    <form method="get" class="filter-form">
+        <div>
+            <label for="date">Ngày: </label>
+            <input type="date" id="date" name="date" class="form-control" value="{{ date_filter or '' }}">
+        </div>
+        <div>
+            <label for="name">Tên: </label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="Nhập tên..." value="{{ name_filter or '' }}">
+        </div>
+        <div class="align-self-end">
+            <button type="submit" class="btn btn-primary btn-sm">🔍 Lọc</button>
+            <a href="/admin" class="btn btn-secondary btn-sm">❌ Xoá lọc</a>
+        </div>
+    </form>
+
+    <div class="top-actions mb-3">
+        <a href="/export?date={{ date_filter or '' }}" class="btn btn-success">📥 Xuất ra Excel</a>
+        <a href="/" class="btn btn-dark">🏠 Quay lại trang chính</a>
+    </div>
+
+    {% if records and records|length > 0 %}
+    <table class="table table-bordered shadow-sm bg-white">
+        <thead class="table-light">
+            <tr>
+                <th>Tên</th>
+                <th>Ngày</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in records %}
+            <tr>
+                <td>{{ row['Name'] }}</td>
+                <td>{{ row['Date'] }}</td>
+                <td class="{% if row['Late'] %}late{% endif %}">
+                    {{ row['Checkin'] if row['Checkin'] and row['Checkin'] != 'nan' else '—' }}
+                </td>
+                <td class="{% if row['Early'] %}early{% endif %}">
+                    {{ row['Checkout'] if row['Checkout'] and row['Checkout'] != 'nan' else '—' }}
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('delete_record') }}">
+                        <input type="hidden" name="name" value="{{ row['Name'] }}">
+                        <input type="hidden" name="date" value="{{ row['Date'] }}">
+                        <button type="submit" class="btn btn-danger btn-sm">Xoá</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="no-data mt-4">🚫 Chưa có dữ liệu điểm danh.</p>
+    {% endif %}
+</body>
+</html>
